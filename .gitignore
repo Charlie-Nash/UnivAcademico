@@ -1,0 +1,40 @@
+# Archivos de configuración de usuario y del IDE
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Archivos de salida de compilación
+bin/
+obj/
+out/
+*.dll
+*.exe
+*.pdb
+
+# Configuración de Docker
+.env
+
+# Configuración de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de log y temporales
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Dependencias descargadas
+packages/
+node_modules/
+
+# Publicaciones
+.publish/
+dist/
+
+# Archivos específicos de tu solución
+UnivAcademico.Api/appsettings.json

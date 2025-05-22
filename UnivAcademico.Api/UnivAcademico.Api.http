@@ -1,0 +1,4 @@
+@UnivAcademico.Api_HostAddress = http://localhost:5002
+
+GET {{UnivAcademico.Api_HostAddress}}/
+Accept: application/json
