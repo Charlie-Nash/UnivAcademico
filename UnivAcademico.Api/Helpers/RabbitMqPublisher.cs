@@ -3,16 +3,24 @@ using System.Text.Json;
 using System.Text;
 using RabbitMQ.Client;
 using UnivAcademico.Application.Events;
+using Microsoft.Extensions.Configuration;
 
 namespace UnivAcademico.Api.Helpers
 {
     public class RabbitMqPublisher
     {
+        private readonly string _cloudAmpqUrl;
+
+        public RabbitMqPublisher(IConfigurationSection settings)
+        {
+            _cloudAmpqUrl = settings.GetSection("CloudAMQP")["Url"]!;
+        }
+
         public void PublicarEventoMatriculaRegistrada(MatriculaRegistradaEvent evento)
         {
             var factory = new ConnectionFactory()
-            {
-                Uri = new Uri("amqps://cbjmdvyc:dIL2jaIJ9l2f7GZJgxYBFrQKo9owmFvW@campbell.lmq.cloudamqp.com/cbjmdvyc")
+            {                
+                Uri = new Uri(_cloudAmpqUrl)
             };
 
             using var connection = factory.CreateConnection();
