@@ -13,14 +13,16 @@ namespace UnivAcademico.Api.Controllers
     [Route("api/v1/estudiante/matricula")]
 
     public class MatriculaController : ControllerBase
-    {
+    {        
         private readonly MatriculaService _matriculaService;
         private readonly AppAuth _apptAuth;
+        private readonly RabbitMqPublisher _publisher;
 
-        public MatriculaController(MatriculaService matriculaService, AppAuth appAuth)
+        public MatriculaController(MatriculaService matriculaService, AppAuth appAuth, RabbitMqPublisher publisher)
         {
             _matriculaService = matriculaService;
             _apptAuth = appAuth;
+            _publisher = publisher;
         }
 
         [HttpPost("info")]
@@ -84,8 +86,7 @@ namespace UnivAcademico.Api.Controllers
 
             var listaCursosMat = await _matriculaService.RegistrarMatriculaAsync(matricula);
 
-            //RabittMQ - Inicio
-            RabbitMqPublisher publisher = new();
+            //RabittMQ - Inicio            
             MatriculaRegistradaEvent matriculaRegistradaEvent = new();
 
             matriculaRegistradaEvent.estudiante_id = matricula.estudiante_id;
@@ -97,7 +98,7 @@ namespace UnivAcademico.Api.Controllers
                 matriculaRegistradaEvent.creditos += cursoMat.creditos;
             }
 
-            publisher.PublicarEventoMatriculaRegistrada(matriculaRegistradaEvent);
+            _publisher.PublicarEventoMatriculaRegistrada(matriculaRegistradaEvent);            
             //RabittMQ - Fin
 
             return Ok(listaCursosMat);

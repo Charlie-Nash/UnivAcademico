@@ -11,9 +11,9 @@ namespace UnivAcademico.Api.Helpers
     {
         private readonly string _cloudAmpqUrl;
 
-        public RabbitMqPublisher(IConfigurationSection settings)
+        public RabbitMqPublisher(IConfiguration configuration)
         {
-            _cloudAmpqUrl = settings.GetSection("CloudAMQP")["Url"]!;
+            _cloudAmpqUrl = configuration.GetSection("CloudAMQP")["Url"]!;
         }
 
         public void PublicarEventoMatriculaRegistrada(MatriculaRegistradaEvent evento)
