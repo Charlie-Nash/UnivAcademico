@@ -5,6 +5,7 @@ using UnivAcademico.Application.UseCases;
 using UnivAcademico.Application.DTOs;
 using UnivAcademico.Domain.Entities;
 using Microsoft.AspNetCore.Identity.Data;
+using UnivAcademico.Application.Events;
 
 namespace UnivAcademico.Api.Controllers
 {
@@ -23,7 +24,7 @@ namespace UnivAcademico.Api.Controllers
         }
 
         [HttpPost("info")]
-        public async Task<IActionResult> ObtenerEstudianteInfo([FromBody] PersonaDto request)
+        public async Task<IActionResult> ObtenerEstudianteInfoAsync([FromBody] PersonaDto request)
         {
             if (!_apptAuth.AppSecretKeyValidation(Request.Headers["x-api-app-key"].ToString()))
             {
@@ -35,7 +36,7 @@ namespace UnivAcademico.Api.Controllers
                 return BadRequest(new { status = HttpStatusCode.BadRequest, mensaje = "FALTA: Código de usuario" });
             }
 
-            Estudiante? estudiante = await _matriculaService.ObtenerEstudianteInfo(request);
+            Estudiante? estudiante = await _matriculaService.ObtenerEstudianteInfoAsync(request);
 
             if (estudiante == null)
             {
@@ -82,6 +83,22 @@ namespace UnivAcademico.Api.Controllers
             }
 
             var listaCursosMat = await _matriculaService.RegistrarMatriculaAsync(matricula);
+
+            //RabittMQ - Inicio
+            RabbitMqPublisher publisher = new();
+            MatriculaRegistradaEvent matriculaRegistradaEvent = new();
+
+            matriculaRegistradaEvent.estudiante_id = matricula.estudiante_id;
+            matriculaRegistradaEvent.semestre_id = matricula.semestre_id;
+            matriculaRegistradaEvent.categoria_id = matricula.categoria_id;
+
+            foreach (var cursoMat in listaCursosMat)
+            {
+                matriculaRegistradaEvent.creditos += cursoMat.creditos;
+            }
+
+            publisher.PublicarEventoMatriculaRegistrada(matriculaRegistradaEvent);
+            //RabittMQ - Fin
 
             return Ok(listaCursosMat);
         }

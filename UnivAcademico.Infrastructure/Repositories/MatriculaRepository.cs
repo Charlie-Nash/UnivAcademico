@@ -15,7 +15,7 @@ namespace UnivAcademico.Infrastructure.Repositories
             _connectionString = configuration.GetConnectionString("dbAcademico")!;
         }
 
-        public async Task<Estudiante?> ObtenerEstudianteInfo(int personaId)
+        public async Task<Estudiante?> ObtenerEstudianteInfoAsync(int personaId)
         {
             using var conn = new NpgsqlConnection(_connectionString);
             using var cmd = new NpgsqlCommand("SELECT * FROM tf_estudiante_persona(@personaId);", conn)

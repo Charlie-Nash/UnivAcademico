@@ -13,9 +13,9 @@ namespace UnivAcademico.Application.UseCases
             _matriculaRepository = matriculaRepository;
         }
 
-        public async Task<Estudiante?> ObtenerEstudianteInfo(PersonaDto persona)
+        public async Task<Estudiante?> ObtenerEstudianteInfoAsync(PersonaDto persona)
         {
-            return await _matriculaRepository.ObtenerEstudianteInfo(persona.id);
+            return await _matriculaRepository.ObtenerEstudianteInfoAsync(persona.id);
         }
 
         public async Task<List<OfertaAcad>> ObtenerOfertaAcademicaAsync(int estudianteId)
